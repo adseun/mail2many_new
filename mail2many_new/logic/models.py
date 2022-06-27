@@ -13,8 +13,8 @@ class EmailListUpload(BaseModel):
     mail_text = models.TextField(max_length=320)
     upload_description = models.CharField(max_length=80)
     timestamp = models.DateTimeField(auto_now_add=True)
-    spreadsheet = models.FileField(blank=False,null=False)
-    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    spreadsheet = models.URLField(blank=False,null=False)
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
     sender_email = models.EmailField(blank=False,null=False)
 
     success_count = models.IntegerField(default=0, editable=False)

@@ -1,10 +1,10 @@
 
 from django.urls import path
-from .views import HomeApiView
+from .views import SendEmailAPIView
 
 
 app_name = 'logic'
 urlpatterns = [
     # path('', admin.site.urls),
-    path('',HomeApiView.as_view(), name='home')
+    path('send-email',SendEmailAPIView.as_view(), name='home'),
 ]
