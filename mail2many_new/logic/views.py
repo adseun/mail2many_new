@@ -2,7 +2,6 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 # Create your views here.
 from rest_framework.response import Response
-import pandas as pd
 
 from .serializers import EmailListUploadSerializer, EmailReceipientRelationshipSerializer
 from .models import EmailListUpload, EmailReceipientRelationship

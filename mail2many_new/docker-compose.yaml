@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+    db:
+      image: postgres
+      environment:
+        - POSTGRES_DB= postgres
+        - POSTGRES_USER= postgres
+        - POSTGRES_PASSWORD= postgres
+      container_name: postgres_db
+      # ports:
+      #   - 5432:5432
+      volumes:
+        - ./data/db:/var/lib/posgresql/data
+
+    mail2many_new_image:
+      restart: always
+      build: .
+      volumes:
+        - .:/mail2many_new
+      ports:
+        - 8002:8002
+      image: mail2many_new_image:mail2many_new_tag
+      container_name: mail2many_new_container
+      command: python manage.py runserver 0.0.0.0:8002
+      depends_on:
+        - db
