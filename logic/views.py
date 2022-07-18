@@ -4,8 +4,9 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 # Create your views here.
 from rest_framework.response import Response
-import pandas as pd
 import csv
+
+from logic.emails import send_email
 
 from .serializers import EmailListUploadSerializer, EmailReceipientRelationshipSerializer
 from .models import EmailListUpload, EmailReceipientRelationship
@@ -19,7 +20,8 @@ class SendEmailAPIView(APIView):
     
     def post(self,request,*args,**kwargs):
         serializer = EmailListUploadSerializer(data=request.data)
-        file_type=request.data["file_type"]
+        # file_type=request.data["file_type"]
+        file_type= "https://res.cloudinary.com/mail2many/raw/upload/v1657322583/ABAJI_bms6aw.xlsx"
         if file_type != "xlsx" or file_type != "csv":
             return Response(data={"message":"File type unacceptable"}, status=status.HTTP_403_FORBIDDEN)
         
@@ -31,22 +33,22 @@ class SendEmailAPIView(APIView):
             elif file_type == "csv":
                 with open(spreadsheet, 'r') as file:
                     csvreader = csv.reader(file)
-                    name = []
-                    email = []
+                    names = []
+                    emails = []
                     row_count = 0
                     for row in csvreader:  
                         if row_count == 0:
                             row_count += 1
                         else:        
-                            name.append(row[1])
-                            email.append(row[0])
+                            names.append(row[1])
+                            emails.append(row[0])
                             row_count +=1
-
+                    send_mail=send_email(emails, names) 
                     
+                return Response(data={"message":"Excel Uploaded successfully", "data":serializer.data}, status=status.HTTP_201_CREATED)
                         
             else:
                 return Response(data={"message":"File type unacceptable"}, status=status.HTTP_403_FORBIDDEN)
-            return Response(data={"message":"Excel Uploaded successfully", "data":serializer.data}, status=status.HTTP_201_CREATED)
 
         else:
             print(serializer.errors)
@@ -96,4 +98,12 @@ class SendEmailDetailView(APIView):
         email.delete()
         return Response(status =status.HTTP_404_NOT_FOUND)
         
+        
+        
+# {
+#         "mail_title": "Mail to fuad",
+#         "mail_text": "Dear Fuad, Lorem blah blah blah",
+#         "upload_description": "Ikorodu spreadsheet",
+#          "sender_email": "adeshinafuad@gmail.com"
+#     }
         
